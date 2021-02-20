@@ -1,0 +1,57 @@
+{
+  "name": "vue3-firebase-starter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "VUE_APP_STAGE=dev vue-cli-service serve",
+    "serve:staging": "VUE_APP_STAGE=staging vue-cli-service serve",
+    "serve:prod": "VUE_APP_STAGE=prod vue-cli-service serve",
+    "build": "VUE_APP_STAGE=dev vue-cli-service build",
+    "build:prod": "VUE_APP_STAGE=prod vue-cli-service build",
+    "build:staging": "VUE_APP_STAGE=staging vue-cli-service build",
+    "deploy": "VUE_APP_STAGE=dev yarn build && firebase deploy -P default --only hosting",
+    "deploy:prod": "VUE_APP_STAGE=prod yarn build:prod && firebase deploy -P prod --only hosting",
+    "deploy:staging": "VUE_APP_STAGE=staging yarn build:staging && firebase deploy -P staging --only hosting",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "@vuelidate/core": "^2.0.0-alpha.8",
+    "@vuelidate/validators": "^2.0.0-alpha.5",
+    "firebase": "^8.2.9",
+    "moment-timezone": "^0.5.33",
+    "vue": "^3.0.0",
+    "vue-router": "^3.5.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "autoprefixer": "^10.2.4",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^7.0.0-0",
+    "postcss": "^8.2.6",
+    "tailwindcss": "^2.0.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
