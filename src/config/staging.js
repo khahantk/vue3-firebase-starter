@@ -1,3 +1,4 @@
+export default {};
 const firebaseConfig = {
   apiKey: "AIzaSyDziLU7G1vxzDEXg1yIi_JgmqTBTubdNDw",
   authDomain: "vue3-starter.firebaseapp.com",

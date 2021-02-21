@@ -1,11 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LayoutDefault from "@/layouts/Default.vue";
+import firebase from "@/helpers/firebase";
+import config from "@/config";
+import LayoutDefault from "@/layouts/Default";
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: () => import(/* webpackChunkName: "Home" */ "../pages/Home"),
+    meta: { layout: LayoutDefault },
+  },
+  {
+    path: "/",
+    name: "About",
+    component: () => import(/* webpackChunkName: "About" */ "../pages/About"),
     meta: { layout: LayoutDefault },
   },
 
