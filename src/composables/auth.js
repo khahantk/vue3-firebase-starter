@@ -1,4 +1,4 @@
-import firebase from "@/firebase";
+import firebase from "@/helpers/firebase";
 
 export default function() {
   const createAccount = async (username, password) => {

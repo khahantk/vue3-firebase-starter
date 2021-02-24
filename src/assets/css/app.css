@@ -1,3 +1,108 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: sfprotext-bold;
+    src: url("../fonts/sfprotext-bold.woff2") format("woff2"),
+      url("../fonts/sfprotext-bold.woff") format("woff");
+  }
+  @font-face {
+    font-family: sfprotext-semibold;
+    font-weight: 600;
+    src: url("../fonts/sfprotext-semibold.woff") format("woff");
+  }
+  @font-face {
+    font-family: sfprotext-regular;
+    src: url("../fonts/sfprotext-regular.woff2") format("woff2"),
+      url("../fonts/sfprotext-regular.woff") format("woff");
+  }
+
+  body {
+    @apply font-sans text-base bg-white text-gray-600;
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="time"],
+  input[type="date"],
+  input[type="number"],
+  input[type="url"],
+  textarea {
+    -webkit-appearance: none;
+  }
+  /* Hide Arrows From Input Number */
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  button:disabled,
+  button[disabled] {
+    @apply opacity-60 hover:bg-transparent focus:bg-transparent cursor-default !important;
+  }
+}
+@layer components {
+  .fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.4s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes spinner-border {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-border {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spinner-border 0.75s linear infinite;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.2em;
+}

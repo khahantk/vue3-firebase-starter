@@ -11,12 +11,30 @@ const routes = [
     meta: { layout: LayoutDefault },
   },
   {
-    path: "/",
+    path: "/about",
     name: "About",
     component: () => import(/* webpackChunkName: "About" */ "../pages/About"),
     meta: { layout: LayoutDefault },
   },
-
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import(/* webpackChunkName: "Login" */ "../pages/Login"),
+    meta: { layout: LayoutDefault },
+  },
+  {
+    path: "/signup",
+    name: "Signup",
+    component: () => import(/* webpackChunkName: "Signup" */ "../pages/Signup"),
+    meta: { layout: LayoutDefault },
+  },
+  {
+    path: "/contact",
+    name: "Contact",
+    component: () =>
+      import(/* webpackChunkName: "Contact" */ "../pages/Contact"),
+    meta: { layout: LayoutDefault },
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
