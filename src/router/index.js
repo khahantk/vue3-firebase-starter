@@ -29,9 +29,19 @@ const routes = [
     meta: { layout: LayoutDefault },
   },
   {
+    path: "/forgotpassword",
+    name: "ForgotPassword",
+    component: () =>
+      import(
+        /* webpackChunkName: "forgotpassword" */ "../pages/ForgotPassword"
+      ),
+    meta: { layout: LayoutDefault },
+  },
+  {
     path: "/myaccount",
     name: "MyAccount",
-    component: () => import(/* webpackChunkName: "MyAccount" */ "../pages/MyAccount"),
+    component: () =>
+      import(/* webpackChunkName: "MyAccount" */ "../pages/MyAccount"),
     meta: { layout: LayoutDefault },
   },
   {

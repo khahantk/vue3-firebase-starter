@@ -1,7 +1,8 @@
 <template>
   <div class="flex items-center justify-center">
     <div class="w-full space-y-8">
-      <h1>Log In</h1>
+      <h1>Password recovery</h1>
+      <div class="my-4">We will send you an email to reset your password</div>
       <form
         class="mt-8 space-y-6 max-w-sm"
         @submit="
@@ -25,52 +26,23 @@
             </div>
           </div>
         </div>
-        <div>
-          <label for="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            v-model="vv.password.$model"
-            @keyup.enter="login"
-            class="rounded w-full py-3 bg-white px-4 border-2 border-gray-1 focus:outline-none focus:border-gray-1"
-          />
-        </div>
         <div
           class="text-red-400"
           v-if="message && message.code != 'username' && message.message"
         >
           {{ message.message }}
         </div>
-        <div>
-          <router-link to="/forgotpassword">Forgot password?</router-link>
-        </div>
         <div class="flex justify-start">
           <button
-            @click="login"
-            title="Sign In"
+            @click="submit"
+            title="Send"
             :disabled="isDisabled || loading"
             :loading="loading"
             class="rounded px-10 py-4 bg-white hover:bg-gray-100 focus:outline-none focus:bg-gray-100 border-2 border-gray-400"
             :class="isDisabled ? 'border-gray-200 text-gray-500' : ''"
           >
-            Sign In
+            Send
           </button>
-        </div>
-        <div>
-          By clicking Sign In, you agree to our
-          <router-link to="/terms" class="font-bold"
-            >Terms of Service</router-link
-          >
-          and
-          <router-link to="/privacy" class="font-bold"
-            >Privacy Policy</router-link
-          >
-        </div>
-        <div>
-          <span>New to Demo? </span>
-          <router-link to="/signup" class="underline"
-            >Create your account</router-link
-          >
         </div>
       </form>
     </div>
@@ -78,7 +50,7 @@
 </template>
 
 <script>
-import { required, minLength, email } from "@vuelidate/validators";
+import { required, email } from "@vuelidate/validators";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
@@ -92,28 +64,22 @@ export default {
     const loading = ref(false);
     const message = ref({ type: "", message: "" });
     const auth = useAuth();
-    const user = reactive({
+    const form = reactive({
       username: "",
-      password: "",
     });
     const rules = {
       username: {
         required,
         email,
-        minLength: minLength(3),
-      },
-      password: {
-        required,
-        minLength: minLength(6),
       },
     };
-    const vv = useVuelidate(rules, user);
+    const vv = useVuelidate(rules, form);
 
     const isDisabled = computed(() => {
       vv.value.$touch();
       return !!vv.value.$invalid;
     });
-    const login = async () => {
+    const submit = async () => {
       try {
         vv.value.$touch();
         if (vv.value.$invalid) {
@@ -124,11 +90,10 @@ export default {
         }
         message.value = {};
         loading.value = true;
-        await auth.login(user.username, user.password);
+        await auth.login(form.username, form.password);
         loading.value = false;
-        user.value = {
+        form.value = {
           username: "",
-          password: "",
         };
         router.push("/");
       } catch (error) {
@@ -144,10 +109,9 @@ export default {
     return {
       loading,
       message,
-      user,
       isDisabled,
       vv,
-      login,
+      submit,
     };
   },
 };

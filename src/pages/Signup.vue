@@ -20,8 +20,8 @@
             class="rounded w-full py-3 bg-white px-4 border-2 border-gray-1 focus:outline-none focus:border-gray-1"
           />
           <div v-if="vv.username.$invalid" class="text-red-400 pt-2">
-            <div v-if="vv.username.minLength.$invalid">
-              Username should be at least 3 characters
+            <div v-if="vv.username.email.$invalid">
+              Please enter a valid email address
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { required, minLength } from "@vuelidate/validators";
+import { required, minLength, email } from "@vuelidate/validators";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
@@ -94,7 +94,7 @@ export default {
     const rules = {
       username: {
         required,
-        minLength: minLength(3),
+        email,
       },
       password: {
         required,
