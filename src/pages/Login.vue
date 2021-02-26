@@ -82,7 +82,7 @@ import { required, minLength, email } from "@vuelidate/validators";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
-import useAuth from "@/composables/auth";
+import { useStore } from "vuex";
 
 export default {
   name: "Login",
@@ -91,7 +91,7 @@ export default {
     const router = useRouter();
     const loading = ref(false);
     const message = ref({ type: "", message: "" });
-    const auth = useAuth();
+    const store = useStore();
     const user = reactive({
       username: "",
       password: "",
@@ -116,28 +116,26 @@ export default {
     const login = async () => {
       try {
         vv.value.$touch();
-        if (vv.value.$invalid) {
+        if (vv.value.$invalid || loading.value) {
           return;
         }
-        if (loading.value) {
-          return;
-        }
+
         message.value = {};
         loading.value = true;
-        await auth.login(user.username, user.password);
-        loading.value = false;
+        await store.dispatch("user/login", user);
         user.value = {
           username: "",
           password: "",
         };
         router.push("/");
       } catch (error) {
-        loading.value = false;
         message.value = {
           type: "error",
           message: "Not recognized or incorrect.",
         };
         console.log(error);
+      } finally {
+        loading.value = false;
       }
     };
 

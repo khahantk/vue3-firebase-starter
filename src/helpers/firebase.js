@@ -4,6 +4,7 @@ import "firebase/firestore";
 import "firebase/storage";
 
 import { firebaseConfig } from "@/config";
+import store from "@/store";
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
@@ -16,3 +17,6 @@ firebase.getCurrentUser = () => {
 };
 export default firebase;
 export const db = firebaseApp.firestore();
+firebase.auth().onAuthStateChanged((user) => {
+  store.dispatch("user/fetchUser", user);
+});

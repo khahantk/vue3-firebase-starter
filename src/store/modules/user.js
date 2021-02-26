@@ -1,62 +1,87 @@
 import Cookies from "js-cookie";
+import firebase from "@/helpers/firebase";
 const COOKIE_KEY = "__session";
 // initial state
 const state = {
-  token: "",
-  item: {},
+  loggedIn: false,
+  data: {},
 };
 
 // getters
 const getters = {
-  token: (state) => state.user.token,
-  item: (state) => state.user.item,
+  user: (state) => state.user,
+  data: (state) => state.user.data,
 };
 
 // actions
 const actions = {
   async login({ commit }, authForm) {
-    this.$axios.setToken(false);
-    const data = await this.$axios.$post("auth/login", authForm);
-    const { error, message, token, user } = data;
-    if (error) {
-      throw new Error(message);
+    try {
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(
+          `${authForm.username}`,
+          `${authForm.password}`
+        );
+      commit("SET_LOGGED_IN", true);
+      let options = {};
+      Cookies.set(COOKIE_KEY, "", options);
+    } catch (error) {
+      console.log("Create account error");
+      throw error;
     }
-    commit("SET_TOKEN", token);
-    commit("SET_ITEM", { ...user });
-    let options = {};
-    Cookies.set(COOKIE_KEY, token, options);
-    return data;
   },
   async signup({ commit }, authForm) {
-    this.$axios.setToken(false);
-    const data = await this.$axios.$post("auth/signup", authForm);
-    const { error, message, token, user } = data;
-    if (error) {
-      throw new Error(message);
+    try {
+      const res = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(
+          `${authForm.username}`,
+          `${authForm.password}`
+        );
+      if (authForm.name) {
+        await res.user.updateProfile({ displayName: authForm.name });
+      }
+      commit("SET_LOGGED_IN", true);
+      let options = {};
+      Cookies.set(COOKIE_KEY, "", options);
+    } catch (error) {
+      console.log("Create account error");
+      throw error;
     }
-    commit("SET_TOKEN", token);
-    commit("SET_ITEM", { ...user });
-    let options = {};
-
-    Cookies.set(COOKIE_KEY, token, options);
-    return data;
   },
-  async getAuthUser({ commit, state }) {},
-  logout({ commit, state, dispatch }) {
-    commit("SET_TOKEN", null);
-    commit("SET_AGENT_INFO", {});
-    let options = {};
-    Cookies.remove(COOKIE_KEY, options);
+  fetchUser({ commit }, user) {
+    if (user && user.uid) {
+      commit("SET_LOGGED_IN", true);
+      commit("SET_USER", {
+        displayName: user.displayName,
+        email: user.email,
+      });
+    } else {
+      commit("SET_LOGGED_IN", false);
+      commit("SET_USER", {});
+    }
+  },
+  async logout({ commit }) {
+    try {
+      await firebase.auth().signOut();
+      commit("SET_LOGGED_IN", null);
+      commit("SET_USER", {});
+      let options = {};
+      Cookies.remove(COOKIE_KEY, options);
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 
 // mutations
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token;
+  SET_LOGGED_IN: (state, value) => {
+    state.loggedIn = value;
   },
-  SET_ITEM: (state, item) => {
-    state.item = item;
+  SET_USER: (state, data) => {
+    state.data = data;
   },
 };
 

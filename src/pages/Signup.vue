@@ -24,6 +24,12 @@
               Please enter a valid email address
             </div>
           </div>
+          <div
+            v-if="message && message.code && message.code == 'username'"
+            class="text-red-400 pt-2"
+          >
+            {{ message.message }}
+          </div>
         </div>
         <div>
           <label for="password">Password</label>
@@ -77,7 +83,7 @@ import { required, minLength, email } from "@vuelidate/validators";
 import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
-import useAuth from "@/composables/auth";
+import { useStore } from "vuex";
 
 export default {
   name: "Signup",
@@ -86,7 +92,7 @@ export default {
     const router = useRouter();
     const loading = ref(false);
     const message = ref({ type: "", message: "" });
-    const auth = useAuth();
+    const store = useStore();
     const user = reactive({
       username: "",
       password: "",
@@ -110,28 +116,29 @@ export default {
     const signup = async () => {
       try {
         vv.value.$touch();
-        if (vv.value.$invalid) {
-          return;
-        }
-        if (loading.value) {
+        if (vv.value.$invalid || loading.value) {
           return;
         }
         message.value = {};
         loading.value = true;
-        await auth.createAccount(user.username, user.password);
-        loading.value = false;
+        await store.dispatch("user/signup", user);
         user.value = {
           username: "",
           password: "",
         };
         router.push("/");
       } catch (error) {
-        loading.value = false;
-        message.value = {
-          type: "error",
-          message: "Not recognized or incorrect.",
-        };
+        const { code } = error;
+        if (code === "auth/email-already-in-use") {
+          message.value = {
+            type: "error",
+            code: "username",
+            message: "Taken",
+          };
+        }
         console.log(error);
+      } finally {
+        loading.value = false;
       }
     };
 

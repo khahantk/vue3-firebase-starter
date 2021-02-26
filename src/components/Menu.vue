@@ -12,11 +12,22 @@
   </template>
 </template>
   <script>
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
 export default {
   setup() {
-    const logout = () => {};
+    const store = useStore();
+    const router = useRouter();
+    const logout = async () => {
+      await store.dispatch("user/logout");
+      router.replace("/login");
+    };
     return {
-      isLoggin: true,
+      isLoggin: computed(() => {
+        return store.state.user.loggedIn;
+      }),
       logout,
     };
   },
