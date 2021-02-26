@@ -33,18 +33,17 @@ const actions = {
   },
   async signup({ commit }, authForm) {
     try {
+      const { firstName, username, password } = authForm;
       const res = await firebase
         .auth()
-        .createUserWithEmailAndPassword(
-          `${authForm.username}`,
-          `${authForm.password}`
-        );
-      if (authForm.name) {
-        await res.user.updateProfile({ displayName: authForm.name });
+        .createUserWithEmailAndPassword(username, password);
+      if (firstName) {
+        await res.user.updateProfile({ displayName: firstName });
       }
       commit("SET_LOGGED_IN", true);
       let options = {};
       Cookies.set(COOKIE_KEY, "", options);
+      return res;
     } catch (error) {
       console.log("Create account error");
       throw error;
@@ -56,6 +55,7 @@ const actions = {
       commit("SET_USER", {
         displayName: user.displayName,
         email: user.email,
+        uid: user.uid,
       });
     } else {
       commit("SET_LOGGED_IN", false);

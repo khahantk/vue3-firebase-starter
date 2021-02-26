@@ -1,4 +1,4 @@
-import firebase from "@/helpers/firebase";
+import firebase, { db } from "@/helpers/firebase";
 
 export default function() {
   const createAccount = async (username, password) => {
@@ -36,7 +36,32 @@ export default function() {
       throw error;
     }
   };
-  const updateProfile = async () => {};
+  const saveProfile = async (userId, { firstName, lastName }) => {
+    try {
+      await db
+        .collection("profiles")
+        .doc(userId)
+        .set({
+          firstName,
+          lastName,
+        });
+    } catch (error) {
+      console.log("saveProfile");
+      throw error;
+    }
+  };
+  const getProfile = async (userId) => {
+    try {
+      const res = await db
+        .collection("profiles")
+        .doc(userId)
+        .get();
+      return res.data();
+    } catch (error) {
+      console.log("getProfile");
+      throw error;
+    }
+  };
   const sendPasswordResetEmail = async (emailAddress) => {
     try {
       await firebase.auth().sendPasswordResetEmail(emailAddress);
@@ -63,9 +88,10 @@ export default function() {
     login,
     logout,
     updatePassword,
-    updateProfile,
+    saveProfile,
     sendPasswordResetEmail,
     sendEmailVerification,
     getCurrentUser,
+    getProfile,
   };
 }

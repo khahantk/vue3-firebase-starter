@@ -54,6 +54,13 @@ const routes = [
     meta: { layout: LayoutDefault },
   },
   {
+    path: "/profile",
+    name: "profile",
+    component: () =>
+      import(/* webpackChunkName: "profile" */ "../pages/UpdateProfile"),
+    meta: { layout: LayoutDefault },
+  },
+  {
     path: "/contact",
     name: "Contact",
     component: () =>

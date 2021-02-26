@@ -1,7 +1,12 @@
 <template>
   <h1>My Account</h1>
-  <div class="mt-4">My Account</div>
-  <div>{{ user }}</div>
+  <div class="mt-4">Manage your account information</div>
+  <div>
+    <router-link to="/changepassword">Change password</router-link>
+  </div>
+  <div>
+    <router-link to="/profile">Personal Info</router-link>
+  </div>
 </template>
 <script>
 import { computed } from "vue";

@@ -10,11 +10,34 @@
           }
         "
       >
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="firstName" class="sr-only">First Name</label>
+            <input
+              id="firstName"
+              placeholder="First Name"
+              type="text"
+              v-model="vv.firstName.$model"
+              class="rounded w-full py-3 bg-white px-4 border-2 border-gray-1 focus:outline-none focus:border-gray-1"
+            />
+          </div>
+          <div>
+            <label for="lastName" class="sr-only">Last Name</label>
+            <input
+              id="lastName"
+              placeholder="Last Name"
+              type="text"
+              v-model="vv.lastName.$model"
+              class="rounded w-full py-3 bg-white px-4 border-2 border-gray-1 focus:outline-none focus:border-gray-1"
+            />
+          </div>
+        </div>
         <div>
-          <label for="username">Email</label>
+          <label for="username" class="sr-only">Email</label>
           <input
             id="username"
             type="text"
+            placeholder="Email"
             v-model="vv.username.$model"
             @keyup.enter="login"
             class="rounded w-full py-3 bg-white px-4 border-2 border-gray-1 focus:outline-none focus:border-gray-1"
@@ -32,9 +55,10 @@
           </div>
         </div>
         <div>
-          <label for="password">Password</label>
+          <label for="password" class="sr-only">Password</label>
           <input
             id="password"
+            placeholder="Password"
             type="password"
             v-model="vv.password.$model"
             @keyup.enter="login"
@@ -84,6 +108,7 @@ import { computed, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import useAuth from "@/composables/auth";
 
 export default {
   name: "Signup",
@@ -93,11 +118,20 @@ export default {
     const loading = ref(false);
     const message = ref({ type: "", message: "" });
     const store = useStore();
-    const user = reactive({
+    const { saveProfile } = useAuth();
+    const form = reactive({
+      firstName: "",
+      lastName: "",
       username: "",
       password: "",
     });
     const rules = {
+      firstName: {
+        required,
+      },
+      lastName: {
+        required,
+      },
       username: {
         required,
         email,
@@ -107,7 +141,7 @@ export default {
         minLength: minLength(6),
       },
     };
-    const vv = useVuelidate(rules, user);
+    const vv = useVuelidate(rules, form);
 
     const isDisabled = computed(() => {
       vv.value.$touch();
@@ -121,11 +155,14 @@ export default {
         }
         message.value = {};
         loading.value = true;
-        await store.dispatch("user/signup", user);
-        user.value = {
+        const { user } = await store.dispatch("user/signup", form);
+        await saveProfile(user.uid, { ...form });
+        Object.assign(form, {
+          firstName: "",
+          lastName: "",
           username: "",
           password: "",
-        };
+        });
         router.push("/");
       } catch (error) {
         const { code } = error;
@@ -145,7 +182,6 @@ export default {
     return {
       loading,
       message,
-      user,
       isDisabled,
       vv,
       signup,
