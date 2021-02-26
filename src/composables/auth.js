@@ -22,11 +22,39 @@ export default function() {
       throw error;
     }
   };
+  const updatePassword = async (password, newPassword) => {
+    try {
+      const user = firebase.auth().currentUser;
+      const credentials = firebase.auth.EmailAuthProvider.credential(
+        user.email,
+        password
+      );
+      await user.reauthenticateWithCredential(credentials);
+      await user.updatePassword(newPassword);
+    } catch (error) {
+      console.log("Login error");
+      throw error;
+    }
+  };
+  const updateProfile = async () => {};
+  const sendPasswordResetEmail = async (emailAddress) => {
+    try {
+      await firebase.auth().sendPasswordResetEmail(emailAddress);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  const sendEmailVerification = async () => {};
+  const getCurrentUser = async () => {
+    return firebase.auth().currentUser;
+  };
   const logout = async () => {
     try {
       await firebase.auth().signOut();
     } catch (error) {
       console.log(error);
+      throw error;
     }
   };
 
@@ -34,5 +62,10 @@ export default function() {
     createAccount,
     login,
     logout,
+    updatePassword,
+    updateProfile,
+    sendPasswordResetEmail,
+    sendEmailVerification,
+    getCurrentUser,
   };
 }

@@ -45,6 +45,15 @@ const routes = [
     meta: { layout: LayoutDefault },
   },
   {
+    path: "/changepassword",
+    name: "ChangePassword",
+    component: () =>
+      import(
+        /* webpackChunkName: "changepassword" */ "../pages/ChangePassword"
+      ),
+    meta: { layout: LayoutDefault },
+  },
+  {
     path: "/contact",
     name: "Contact",
     component: () =>
